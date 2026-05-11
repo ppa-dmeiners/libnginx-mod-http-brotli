@@ -1,0 +1,41 @@
+Source: libnginx-mod-http-brotli
+Section: httpd
+Priority: optional
+Maintainer: Debian Nginx Maintainers <pkg-nginx-maintainers@alioth-lists.debian.net>
+Uploaders: Jan Mojžíš <janmojzis@debian.org>,
+Build-Depends: debhelper-compat (= 13),
+               dh-sequence-nginx,
+               libbrotli-dev,
+Standards-Version: 4.7.2
+Homepage: https://github.com/google/ngx_brotli
+Vcs-Git: https://salsa.debian.org/nginx-team/libnginx-mod-http-brotli.git
+Vcs-Browser: https://salsa.debian.org/nginx-team/libnginx-mod-http-brotli
+Rules-Requires-Root: no
+
+Package: libnginx-mod-http-brotli-filter
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Brotli lossless compression support for Nginx - filter
+ Brotli is a generic-purpose lossless compression algorithm that compresses
+ data using a combination of a modern variant of the LZ77 algorithm, Huffman
+ coding and 2nd order context modeling, with a compression ratio comparable
+ to the best currently available general-purpose compression methods. It is
+ similar in speed with deflate but offers more dense compression.
+ .
+ ngx_brotli filter module - used to compress responses on-the-fly
+
+Package: libnginx-mod-http-brotli-static
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Brotli lossless compression support for Nginx - static
+ Brotli is a generic-purpose lossless compression algorithm that compresses
+ data using a combination of a modern variant of the LZ77 algorithm, Huffman
+ coding and 2nd order context modeling, with a compression ratio comparable
+ to the best currently available general-purpose compression methods. It is
+ similar in speed with deflate but offers more dense compression.
+ .
+ ngx_brotli static module - used to serve pre-compressed files

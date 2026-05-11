@@ -1,0 +1,44 @@
+#!/bin/sh
+set -e
+
+cat <<EOF > "/etc/nginx/sites-enabled/default"
+server {
+  listen 80 default_server;
+  root /var/www/html;
+
+  location /helloworld {
+    default_type text/plain;
+    brotli on;
+    brotli_types text/plain;
+    brotli_min_length 10;
+    brotli_comp_level 11;
+  }
+}
+EOF
+
+mkdir -p /var/www/html
+echo 'hello world' > /var/www/html/helloworld
+
+exp="content-encoding: br
+hello world
+response_code: 200"
+
+nginx -t
+invoke-rc.d nginx restart || { journalctl -n all -xu nginx.service; exit 1; }
+
+out=`curl --compressed --fail -D- -w "response_code: %{http_code}\n" http://127.0.0.1/helloworld`
+out=`echo "${out}" | sed 's/\r//'`
+out=`echo "${out}" | awk '{print tolower($0)}'`
+out=`echo "${out}" | grep '^content-encoding: \|^hello world$\|response_code: '`
+
+if [ x"${out}" != x"${exp}" ]; then
+  echo "output:"
+  echo "====================="
+  echo "${out}"
+  echo "====================="
+  echo "expected output:"
+  echo "====================="
+  echo "${exp}"
+  echo "====================="
+  exit 1
+fi
